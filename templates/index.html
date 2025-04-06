@@ -1,0 +1,64 @@
+<!-- templates/index.html -->
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Search System</title>
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+</head>
+<body>
+    <h1>Search System</h1>
+    <input type="text" id="searchQuery" placeholder="Enter search query">
+    <button id="searchButton">Search</button>
+    <div id="searchResults"></div>
+
+    <h1>Clustered Games</h1>
+    <div id="clusteredGames">
+        {% for cluster, games in clustered_articles.items() %}
+        <h2>{{ cluster }}</h2>
+        <ul>
+            {% for game in games %}
+            <li>
+                <strong>Title:</strong> {{ game['title'] }} |
+                <strong>Genre:</strong> {{ game['genre'] }} |
+                <strong>Publisher:</strong> {{ game['publisher'] }} |
+                <strong>Developer:</strong> {{ game['developer'] }} |
+                <strong>Total Sales:</strong> {{ game['total_sales'] }}
+            </li>
+            {% endfor %}
+        </ul>
+        {% endfor %}
+    </div>
+
+    <script>
+        $(document).ready(function () {
+            $('#searchButton').click(function () {
+                var query = $('#searchQuery').val();
+                $.ajax({
+                    url: '/search',
+                    type: 'POST',
+                    data: { query: query },
+                    success: function (response) {
+                        displaySearchResults(response);
+                    }
+                });
+            });
+        });
+
+        function displaySearchResults(results) {
+            $('#searchResults').empty();
+            results.forEach(function (game) {
+                $('#searchResults').append(
+                    '<p><strong>Title:</strong> ' + game['Title'] +
+                    ', <strong>Genre:</strong> ' + game['Genre'] +
+                    ', <strong>Publisher:</strong> ' + game['Publisher'] +
+                    ', <strong>Developer:</strong> ' + game['Developer'] +
+                    ', <strong>Total Sales:</strong> ' + game['Total Sales'] +
+                    '</p>'
+                );
+            });
+        }
+    </script>
+</body>
+</html>
